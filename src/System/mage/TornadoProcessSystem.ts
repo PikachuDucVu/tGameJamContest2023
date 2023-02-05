@@ -1,14 +1,14 @@
 import { System, Inject } from "flat-ecs";
-import { Damage } from "../component/Damage";
-import { Health } from "../component/Health";
-import { Spartial } from "../component/Spatial";
-import { ConfigGame } from "../dto/ConfigGame";
-import { GameState } from "../dto/GameState";
+import { Damage } from "../../component/Damage";
+import { Health } from "../../component/Health";
+import { Spartial } from "../../component/Spatial";
+import { ConfigGame } from "../../dto/ConfigGame";
+import { GameState } from "../../dto/GameState";
 
-export class ProtectBallProcessSystem extends System {
+export class TornadoProcessSystem extends System {
   @Inject("gameState") gameState: GameState;
   @Inject("configGame") configGame: ConfigGame;
-  offset = 100;
+  offset = 175;
 
   process(): void {
     for (let i = 0; i < this.gameState.protectBall.length; i++) {

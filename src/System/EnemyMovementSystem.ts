@@ -1,7 +1,6 @@
 import { System, Inject } from "flat-ecs";
 import { Vector2 } from "gdxts";
 import { Health } from "../component/Health";
-import { Moveable } from "../component/Movable";
 import { Spartial } from "../component/Spatial";
 import { GameState } from "../dto/GameState";
 import { JoyStick } from "../dto/JoyStick";

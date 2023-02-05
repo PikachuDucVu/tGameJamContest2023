@@ -1,9 +1,9 @@
 import { Inject, System } from "flat-ecs";
-import { Damage } from "../component/Damage";
-import { Health } from "../component/Health";
-import { Moveable } from "../component/Movable";
-import { Spartial } from "../component/Spatial";
-import { GameState } from "../dto/GameState";
+import { Damage } from "../../component/Damage";
+import { Health } from "../../component/Health";
+import { Moveable } from "../../component/Movable";
+import { Spartial } from "../../component/Spatial";
+import { GameState } from "../../dto/GameState";
 
 export class NormalAttackProcessingSystem extends System {
   @Inject("gameState") gameState: GameState;
@@ -19,7 +19,7 @@ export class NormalAttackProcessingSystem extends System {
         this.gameState.normalAttackBulletIDs[i],
         Spartial
       );
-      if (spartialPlayer.pos.distance(spartialBullet.pos) > 250) {
+      if (spartialPlayer.pos.distance(spartialBullet.pos) > 350) {
         this.world.deleteEntity(this.gameState.normalAttackBulletIDs[i]);
         this.gameState.normalAttackBulletIDs.splice(i, 1);
       }
@@ -53,14 +53,14 @@ export class NormalAttackProcessingSystem extends System {
           Health
         );
         if (
-          spartialEnemy.pos.x <= spartialBullet.pos.x + 25 &&
-          spartialEnemy.pos.x >= spartialBullet.pos.x - 25 &&
-          spartialEnemy.pos.y <= spartialBullet.pos.y + 25 &&
-          spartialEnemy.pos.y >= spartialBullet.pos.y - 25
+          spartialEnemy.pos.x <= spartialBullet.pos.x + spartialBullet.radius &&
+          spartialEnemy.pos.x >= spartialBullet.pos.x - spartialBullet.radius &&
+          spartialEnemy.pos.y <= spartialBullet.pos.y + spartialBullet.radius &&
+          spartialEnemy.pos.y >= spartialBullet.pos.y - spartialBullet.radius
         ) {
-          this.world.deleteEntity(this.gameState.normalAttackBulletIDs[i]);
+          // this.world.deleteEntity(this.gameState.normalAttackBulletIDs[i]);
           heathEnemy.hp = Math.max(heathEnemy.hp - damageBullet.damage, 0);
-          this.gameState.normalAttackBulletIDs.splice(i, 1);
+          // this.gameState.normalAttackBulletIDs.splice(i, 1);
         }
       }
     }

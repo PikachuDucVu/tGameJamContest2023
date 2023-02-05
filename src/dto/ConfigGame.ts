@@ -4,6 +4,9 @@ export interface ConfigGame {
   enemysRespawnTime: number;
   amountProtectBall: number;
   speedProtectBall: number;
+  timeToMakeDamage: number;
+  sizeSkill1Mage: number;
+  laserCooldown: number;
 
   start: boolean;
   pause: boolean;

@@ -1,5 +1,13 @@
 import { Inject, System } from "flat-ecs";
-import { Color, ShapeRenderer, Vector2 } from "gdxts";
+import {
+  AssetManager,
+  Color,
+  OrthoCamera,
+  PolygonBatch,
+  ShapeRenderer,
+  Texture,
+  Vector2,
+} from "gdxts";
 import { Health } from "../component/Health";
 import { Spartial } from "../component/Spatial";
 import { GameState } from "../dto/GameState";
@@ -7,13 +15,40 @@ import { LevelState } from "../dto/LevelState";
 
 export class PlayerRenderSystem extends System {
   @Inject("shapeRenderer") shapeRenderer: ShapeRenderer;
+  @Inject("assetManager") assetManager: AssetManager;
+  @Inject("batch") batch: PolygonBatch;
+  @Inject("cameraGame") cameraGame: OrthoCamera;
+  @Inject("cameraUI") cameraUI: OrthoCamera;
   @Inject("gameState") gameState: GameState;
   @Inject("levelState") levelState: LevelState;
 
   width = 50;
-  offset = 25;
+  offset = 30;
   tempDirection = new Vector2(0, 0);
   offsetAngle = 45;
+  knight1: Texture;
+  knight2: Texture;
+  knight3: Texture;
+  knight4: Texture;
+  knight5: Texture;
+
+  mage1: Texture;
+  mage2: Texture;
+  mage3: Texture;
+  mage4: Texture;
+  mage5: Texture;
+
+  initialized(): void {
+    this.knight1 = this.assetManager.getTexture("knight1") as Texture;
+    this.knight2 = this.assetManager.getTexture("knight2") as Texture;
+    this.knight3 = this.assetManager.getTexture("knight3") as Texture;
+    this.knight4 = this.assetManager.getTexture("knight4") as Texture;
+
+    this.mage1 = this.assetManager.getTexture("mage1") as Texture;
+    this.mage2 = this.assetManager.getTexture("mage2") as Texture;
+    this.mage3 = this.assetManager.getTexture("mage3") as Texture;
+    this.mage4 = this.assetManager.getTexture("mage4") as Texture;
+  }
 
   process(): void {
     const spartial = this.world.getComponent(this.gameState.playerID, Spartial);
@@ -24,13 +59,13 @@ export class PlayerRenderSystem extends System {
     this.shapeRenderer.begin();
 
     if (healthPlayer.hp > 0) {
-      this.shapeRenderer.circle(
-        true,
-        spartial.pos.x,
-        spartial.pos.y,
-        spartial.radius,
-        Color.GREEN
-      );
+      // this.shapeRenderer.circle(
+      //   true,
+      //   spartial.pos.x,
+      //   spartial.pos.y,
+      //   spartial.radius,
+      //   Color.GREEN
+      // );
 
       this.shapeRenderer.rect(
         true,
@@ -68,5 +103,85 @@ export class PlayerRenderSystem extends System {
       );
     }
     this.shapeRenderer.end();
+    this.batch.setProjection(this.cameraGame.combined);
+    this.batch.begin();
+    if (this.levelState.role === 1 && healthPlayer.hp >= 0) {
+      if (this.levelState.currentLevel === 1) {
+        this.batch.draw(
+          this.knight4,
+          spartial.pos.x - this.offset,
+          spartial.pos.y - this.offset,
+          65,
+          65
+        );
+      }
+      if (this.levelState.currentLevel === 2) {
+        this.batch.draw(
+          this.knight3,
+          spartial.pos.x - this.offset,
+          spartial.pos.y - this.offset,
+          65,
+          65
+        );
+      }
+      if (this.levelState.currentLevel === 3) {
+        this.batch.draw(
+          this.knight2,
+          spartial.pos.x - this.offset,
+          spartial.pos.y - this.offset,
+          65,
+          65
+        );
+      }
+      if (this.levelState.currentLevel >= 4) {
+        this.batch.draw(
+          this.knight1,
+          spartial.pos.x - this.offset,
+          spartial.pos.y - this.offset,
+          65,
+          65
+        );
+      }
+    }
+    if (this.levelState.role === 2) {
+      if (this.levelState.currentLevel === 1) {
+        this.batch.draw(
+          this.mage4,
+          spartial.pos.x - this.offset,
+          spartial.pos.y - this.offset,
+          65,
+          65
+        );
+      }
+      if (this.levelState.currentLevel === 2) {
+        this.batch.draw(
+          this.mage3,
+          spartial.pos.x - this.offset,
+          spartial.pos.y - this.offset,
+          65,
+          65
+        );
+      }
+      if (this.levelState.currentLevel === 3) {
+        this.batch.draw(
+          this.mage2,
+          spartial.pos.x - this.offset,
+          spartial.pos.y - this.offset,
+          65,
+          65
+        );
+      }
+      if (this.levelState.currentLevel >= 4) {
+        this.batch.draw(
+          this.mage1,
+          spartial.pos.x - this.offset,
+          spartial.pos.y - this.offset,
+          65,
+          65
+        );
+      }
+    }
+    this.batch.end();
+    this.batch.setProjection(this.cameraUI.combined);
   }
 }

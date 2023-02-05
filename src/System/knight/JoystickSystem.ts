@@ -1,7 +1,7 @@
 import { Inject, System } from "flat-ecs";
 import { Vector2, ViewportInputHandler } from "gdxts";
-import { Constants } from "../Constant";
-import { JoyStick } from "../dto/JoyStick";
+import { Constants } from "../../Constant";
+import { JoyStick } from "../../dto/JoyStick";
 
 export class JoystickSystem extends System {
   @Inject("inputHandler") inputHandler: ViewportInputHandler;

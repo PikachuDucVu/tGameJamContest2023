@@ -1,8 +1,8 @@
 import { System, Inject } from "flat-ecs";
 import { Color, OrthoCamera, ShapeRenderer, Vector2 } from "gdxts";
-import { Health } from "../component/Health";
-import { GameState } from "../dto/GameState";
-import { JoyStick } from "../dto/JoyStick";
+import { Health } from "../../component/Health";
+import { GameState } from "../../dto/GameState";
+import { JoyStick } from "../../dto/JoyStick";
 
 export class JoystickRenderSystem extends System {
   @Inject("shapeRenderer") shapeRenderer: ShapeRenderer;

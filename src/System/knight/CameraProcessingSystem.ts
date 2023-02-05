@@ -1,8 +1,8 @@
 import { System, Inject } from "flat-ecs";
 import { OrthoCamera } from "gdxts";
-import { Spartial } from "../component/Spatial";
-import { Constants } from "../Constant";
-import { GameState } from "../dto/GameState";
+import { Spartial } from "../../component/Spatial";
+import { Constants } from "../../Constant";
+import { GameState } from "../../dto/GameState";
 
 export class CameraProcessingSystem extends System {
   @Inject("cameraGame") cameraGame: OrthoCamera;

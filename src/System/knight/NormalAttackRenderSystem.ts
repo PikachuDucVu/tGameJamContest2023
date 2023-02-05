@@ -1,8 +1,8 @@
 import { System, Inject } from "flat-ecs";
 import { Color, ShapeRenderer } from "gdxts";
-import { Spartial } from "../component/Spatial";
-import { ConfigGame } from "../dto/ConfigGame";
-import { GameState } from "../dto/GameState";
+import { Spartial } from "../../component/Spatial";
+import { ConfigGame } from "../../dto/ConfigGame";
+import { GameState } from "../../dto/GameState";
 
 export class NormalAttackRenderSystem extends System {
   @Inject("shapeRenderer") shapeRenderer: ShapeRenderer;

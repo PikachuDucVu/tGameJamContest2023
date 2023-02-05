@@ -1,16 +1,19 @@
 import { System, Inject, Archetype } from "flat-ecs";
 import { Health } from "../component/Health";
-import { Moveable } from "../component/Movable";
 import { Spartial } from "../component/Spatial";
 import { Constants } from "../Constant";
 import { ConfigGame } from "../dto/ConfigGame";
 import { GameState } from "../dto/GameState";
+import { LevelState } from "../dto/LevelState";
+import { PowerEnemy } from "../dto/PowerEnemy";
 
 export class EnemySpawningSystem extends System {
   @Inject("gameState") gameState: GameState;
   @Inject("configGame") configGame: ConfigGame;
+  @Inject("powerEnemy") powerEnemy: PowerEnemy;
+  @Inject("levelState") levelState: LevelState;
 
-  MAX_ENEMIES = 30;
+  MAX_ENEMIES = 40;
 
   time = -1;
 
@@ -19,6 +22,11 @@ export class EnemySpawningSystem extends System {
   }
 
   process(): void {
+    const spartialPlayer = this.world.getComponent(
+      this.gameState.playerID,
+      Spartial
+    );
+
     this.time += this.world.delta;
     if (
       this.time >= this.configGame.enemysRespawnTime &&
@@ -40,8 +48,8 @@ export class EnemySpawningSystem extends System {
         this.gameState.enemyIDs[this.gameState.enemyIDs.length - 1],
         Health
       );
-      heathEnemy.setHp(75);
-      heathEnemy.setMaxHP(100);
+      heathEnemy.setHp(this.powerEnemy.hp);
+      heathEnemy.setMaxHP(this.powerEnemy.hp);
 
       this.time = 0;
     }

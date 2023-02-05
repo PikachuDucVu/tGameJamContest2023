@@ -1,7 +1,7 @@
-import { verify } from "crypto";
 import { Archetype, World } from "flat-ecs";
 import {
   AssetManager,
+  BitmapFont,
   InputHandler,
   OrthoCamera,
   PolygonBatch,
@@ -11,8 +11,7 @@ import {
   Viewport,
   ViewportInputHandler,
 } from "gdxts";
-import { wrap } from "module";
-import { Damage } from "../component/Damage";
+
 import { Health } from "../component/Health";
 import { Moveable } from "../component/Movable";
 import { Spartial } from "../component/Spatial";
@@ -21,25 +20,10 @@ import { ConfigGame } from "../dto/ConfigGame";
 import { GameState } from "../dto/GameState";
 import { JoyStick } from "../dto/JoyStick";
 import { LevelState } from "../dto/LevelState";
-import { Skill3ProcessSystem } from "../System/Skill3ProcessSystem";
-import { Skill3RenderSystem } from "../System/Skill3RenderSystem";
-import { Skill3SpawningSystem } from "../System/Skill3SpawningSystem";
-import { CameraProcessingSystem } from "../System/CameraProcessingSystem";
-import { EnemyMovementSystem } from "../System/EnemyMovementSystem";
-import { EnemyRenderSystem } from "../System/EnemyRenderSystem";
-import { EnemySpawningSystem } from "../System/EnemySpawningSystem";
-import { GridMapRenderSystem } from "../System/GridMapRenderSystem";
-import { JoystickRenderSystem } from "../System/JoystickRenderSystem";
-import { JoystickSystem } from "../System/JoystickSystem";
-import { PlayerMovementSystem } from "../System/PlayerMovementSystem";
-import { PlayerRenderSystem } from "../System/PlayerRenderSystem";
-import { ProtectBallProcessSystem } from "../System/ProtectBallProcessSystem";
-import { ProtectBallRenderSystem } from "../System/ProtectBallRenderSystem";
-import { ProtectBallSpawningSystem } from "../System/ProtectBallSpawningSystem";
-import { UpgradeLevelSystem } from "../System/UpgradeLevelSystem";
-import { NormalAttackSpawningSystem } from "../System/NormalAttackSpawningSystem";
-import { NormalAttackRenderSystem } from "../System/NormalAttackRenderSystem";
-import { NormalAttackProcessingSystem } from "../System/NormalAttackProcessSystem";
+import { MenuRoleSystem } from "../System/MenuRole";
+import { GridMapRenderSystem } from "../System/knight/GridMapRenderSystem";
+import { MenuRenderSystem } from "../System/MenuRenderSystem";
+import { PowerEnemy } from "../dto/PowerEnemy";
 
 export const createGameScreen = async (
   assetManager: AssetManager,
@@ -62,6 +46,9 @@ export const createGameScreen = async (
   const shapeRenderer = new ShapeRenderer(gl);
   const inputHandler = new ViewportInputHandler(viewport);
 
+  const font = await BitmapFont.load(gl, "./font.fnt");
+  const font2 = await BitmapFont.load(gl, "./font2.fnt");
+
   const joyStick: JoyStick = {
     origin: new Vector2(),
     direction: new Vector2(),
@@ -76,11 +63,14 @@ export const createGameScreen = async (
   const configGame: ConfigGame = {
     normalAttack: 0.25,
     cooldownSkill3: 0.45,
-    enemysRespawnTime: 1.25,
-    amountProtectBall: 5,
-    speedProtectBall: 3,
+    enemysRespawnTime: 0.2,
+    amountProtectBall: 10,
+    speedProtectBall: 5,
+    timeToMakeDamage: 0.75,
+    sizeSkill1Mage: 200,
+    laserCooldown: 1.25,
 
-    start: true,
+    start: false,
     pause: false,
     stop: false,
   };
@@ -93,56 +83,50 @@ export const createGameScreen = async (
     bulletIDs: [],
     normalAttackBulletIDs: [],
     protectBall: [],
+    protectSkill: 0,
+    laserSkillID: [],
+    tempBullet: [],
   };
   const levelState: LevelState = {
-    role: 1,
+    role: 0,
     exp: 1,
-    maxExp: 10,
+    maxExp: 100,
     currentLevel: 1,
+  };
+  const powerEnemy: PowerEnemy = {
+    hp: 100,
+    damage: 25,
   };
 
   const spartialPlayer = world.getComponent(gameState.playerID, Spartial);
   spartialPlayer.setPos(0, 0);
   spartialPlayer.setRadius(25);
   const moveAblePlayer = world.getComponent(gameState.playerID, Moveable);
-  moveAblePlayer.speed = 5;
+  moveAblePlayer.speed = 4;
   const healthPlayer = world.getComponent(gameState.playerID, Health);
-  healthPlayer.setHp(75);
+  healthPlayer.setHp(100);
   healthPlayer.setMaxHP(100);
 
   world.register("cameraGame", cameraGame);
   world.register("batch", batch);
   world.register("shapeRenderer", shapeRenderer);
+  world.register("assetManager", assetManager);
   world.register("cameraUI", cameraUI);
   world.register("cameraGame", cameraGame);
 
   world.register("gameState", gameState);
   world.register("configGame", configGame);
   world.register("levelState", levelState);
+  world.register("powerEnemy", powerEnemy);
 
   world.register("inputHandler", inputHandler);
   world.register("joyStick", joyStick);
+  world.register("font", font);
+  world.register("font2", font2);
 
-  world.addSystem(new JoystickSystem(), true);
-  world.addSystem(new PlayerMovementSystem(), true);
-  world.addSystem(new EnemySpawningSystem(), true);
-  world.addSystem(new EnemyMovementSystem(), true);
-  world.addSystem(new Skill3SpawningSystem(), true);
-  world.addSystem(new Skill3ProcessSystem(), true);
-  world.addSystem(new ProtectBallSpawningSystem(), true);
-  world.addSystem(new ProtectBallProcessSystem(), true);
-  world.addSystem(new UpgradeLevelSystem(), true);
-  world.addSystem(new NormalAttackSpawningSystem(), true);
-  world.addSystem(new NormalAttackProcessingSystem(), true);
-
-  world.addSystem(new CameraProcessingSystem(), false);
   world.addSystem(new GridMapRenderSystem(), false);
-  world.addSystem(new JoystickRenderSystem(), false);
-  world.addSystem(new PlayerRenderSystem(), false);
-  world.addSystem(new EnemyRenderSystem(), false);
-  world.addSystem(new NormalAttackRenderSystem(), false);
-  world.addSystem(new Skill3RenderSystem(), false);
-  world.addSystem(new ProtectBallRenderSystem(), false);
+  world.addSystem(new MenuRenderSystem(), false);
+  world.addSystem(new MenuRoleSystem(), true);
 
   gl.clearColor(0, 0, 0, 1);
 

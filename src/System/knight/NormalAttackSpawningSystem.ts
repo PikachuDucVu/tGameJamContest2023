@@ -1,12 +1,12 @@
 import { Archetype, Inject, System } from "flat-ecs";
 import { Vector2 } from "gdxts";
-import { Damage } from "../component/Damage";
-import { Moveable } from "../component/Movable";
-import { Spartial } from "../component/Spatial";
-import { ConfigGame } from "../dto/ConfigGame";
-import { GameState } from "../dto/GameState";
-import { JoyStick } from "../dto/JoyStick";
-import { LevelState } from "../dto/LevelState";
+import { Damage } from "../../component/Damage";
+import { Moveable } from "../../component/Movable";
+import { Spartial } from "../../component/Spatial";
+import { ConfigGame } from "../../dto/ConfigGame";
+import { GameState } from "../../dto/GameState";
+import { JoyStick } from "../../dto/JoyStick";
+import { LevelState } from "../../dto/LevelState";
 
 export class NormalAttackSpawningSystem extends System {
   @Inject("gameState") gameState: GameState;
@@ -60,16 +60,16 @@ export class NormalAttackSpawningSystem extends System {
           Damage
         );
         spartialBullet.setPos(spartialPlayer.pos.x, spartialPlayer.pos.y);
-        spartialBullet.setRadius(10);
+        spartialBullet.setRadius(25);
 
         moveAbleBullet.setDirection(
           this.joyStick.direction.x,
           this.joyStick.direction.y
         );
-        moveAbleBullet.direction.rotate(10 * i);
+        moveAbleBullet.direction.rotate(5 * i);
 
         moveAbleBullet.setSpeed(20);
-        damageBullet.setDmg(25 * this.levelState.currentLevel);
+        damageBullet.setDmg(50 * this.levelState.currentLevel);
       }
 
       this.cooldownNormalAttack = 0;

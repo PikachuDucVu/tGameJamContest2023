@@ -1,12 +1,12 @@
 import { System, Inject, Archetype } from "flat-ecs";
 import { Vector2 } from "gdxts";
-import { Damage } from "../component/Damage";
-import { Health } from "../component/Health";
-import { Moveable } from "../component/Movable";
-import { Spartial } from "../component/Spatial";
-import { ConfigGame } from "../dto/ConfigGame";
-import { GameState } from "../dto/GameState";
-import { LevelState } from "../dto/LevelState";
+import { Damage } from "../../component/Damage";
+import { Health } from "../../component/Health";
+import { Moveable } from "../../component/Movable";
+import { Spartial } from "../../component/Spatial";
+import { ConfigGame } from "../../dto/ConfigGame";
+import { GameState } from "../../dto/GameState";
+import { LevelState } from "../../dto/LevelState";
 
 export class Skill3ProcessSystem extends System {
   @Inject("gameState") gameState: GameState;
@@ -54,9 +54,7 @@ export class Skill3ProcessSystem extends System {
           spartialEnemy.pos.y <= spartialBullet.pos.y + 25 &&
           spartialEnemy.pos.y >= spartialBullet.pos.y - 25
         ) {
-          this.world.deleteEntity(this.gameState.bulletIDs[i]);
           heathEnemy.hp = Math.max(heathEnemy.hp - damageBullet.damage, 0);
-          this.gameState.bulletIDs.splice(i, 1);
         }
 
         //Out of ScreenGame

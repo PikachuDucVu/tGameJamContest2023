@@ -1,8 +1,8 @@
 import { Archetype, Inject, System } from "flat-ecs";
-import { Damage } from "../component/Damage";
-import { Spartial } from "../component/Spatial";
-import { ConfigGame } from "../dto/ConfigGame";
-import { GameState } from "../dto/GameState";
+import { Damage } from "../../component/Damage";
+import { Spartial } from "../../component/Spatial";
+import { ConfigGame } from "../../dto/ConfigGame";
+import { GameState } from "../../dto/GameState";
 
 export class ProtectBallSpawningSystem extends System {
   @Inject("gameState") gameState: GameState;
