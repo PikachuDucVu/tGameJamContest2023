@@ -24,6 +24,7 @@ import { MenuRoleSystem } from "../System/MenuRole";
 import { GridMapRenderSystem } from "../System/knight/GridMapRenderSystem";
 import { MenuRenderSystem } from "../System/MenuRenderSystem";
 import { PowerEnemy } from "../dto/PowerEnemy";
+import { PauseMovementSystem } from "../System/PauseMovementSystem";
 
 export const createGameScreen = async (
   assetManager: AssetManager,

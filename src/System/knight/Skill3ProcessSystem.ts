@@ -20,6 +20,22 @@ export class Skill3ProcessSystem extends System {
   process(): void {
     this.time += this.world.delta;
 
+    //Del bullet out of screen game
+    const spartialPlayer = this.world.getComponent(
+      this.gameState.playerID,
+      Spartial
+    );
+    for (let i = 0; i < this.gameState.bulletIDs.length; i++) {
+      const spartialBullet = this.world.getComponent(
+        this.gameState.bulletIDs[i],
+        Spartial
+      );
+      if (spartialPlayer.pos.distance(spartialBullet.pos) > 1000) {
+        this.world.deleteEntity(this.gameState.bulletIDs[i]);
+        this.gameState.bulletIDs.splice(i, 1);
+      }
+    }
+
     for (let i = this.gameState.bulletIDs.length - 1; i >= 0; i--) {
       const spartialBullet = this.world.getComponent(
         this.gameState.bulletIDs[i],
@@ -49,28 +65,12 @@ export class Skill3ProcessSystem extends System {
           Health
         );
         if (
-          spartialEnemy.pos.x <= spartialBullet.pos.x + 25 &&
-          spartialEnemy.pos.x >= spartialBullet.pos.x - 25 &&
-          spartialEnemy.pos.y <= spartialBullet.pos.y + 25 &&
-          spartialEnemy.pos.y >= spartialBullet.pos.y - 25
+          spartialEnemy.pos.x <= spartialBullet.pos.x + 30 &&
+          spartialEnemy.pos.x >= spartialBullet.pos.x - 30 &&
+          spartialEnemy.pos.y <= spartialBullet.pos.y + 30 &&
+          spartialEnemy.pos.y >= spartialBullet.pos.y - 30
         ) {
           heathEnemy.hp = Math.max(heathEnemy.hp - damageBullet.damage, 0);
-        }
-
-        //Out of ScreenGame
-        const spartialPlayer = this.world.getComponent(
-          this.gameState.playerID,
-          Spartial
-        );
-        for (let i = 0; i < this.gameState.bulletIDs.length; i++) {
-          const spartialBullet = this.world.getComponent(
-            this.gameState.bulletIDs[i],
-            Spartial
-          );
-          if (spartialPlayer.pos.distance(spartialBullet.pos) > 1000) {
-            this.world.deleteEntity(this.gameState.bulletIDs[i]);
-            this.gameState.bulletIDs.splice(i, 1);
-          }
         }
       }
     }

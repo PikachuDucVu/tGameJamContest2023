@@ -25,7 +25,7 @@ export class NormalAttackSpawningSystem extends System {
     //normalAttack
     if (
       this.cooldownNormalAttack >= this.configGame.normalAttack &&
-      this.joyStick.direction != new Vector2(0, 0) &&
+      this.joyStick.direction.x != 0 &&
       this.levelState.currentLevel <= 3
     ) {
       for (

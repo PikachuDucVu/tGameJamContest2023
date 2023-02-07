@@ -1,5 +1,5 @@
 import { Inject, System } from "flat-ecs";
-import { InputEvent, InputHandler } from "gdxts";
+import { InputEvent, InputHandler, OrthoCamera, Vector2 } from "gdxts";
 import { ConfigGame } from "../dto/ConfigGame";
 import { LevelState } from "../dto/LevelState";
 import { UpgradeLevelSystem } from "./UpgradeLevelSystem";
@@ -30,17 +30,25 @@ import { LaserSpawningSystem } from "./mage/LaserSpawningSystem";
 import { LaserProcessSystem } from "./mage/LaserProcessSystem";
 import { LaserRenderSystem } from "./mage/LaserRenderSystem";
 import { Constants } from "../Constant";
+import { PauseMovementSystem } from "./PauseMovementSystem";
 
 export class MenuRoleSystem extends System {
   @Inject("gameState") gameState: GameState;
   @Inject("configGame") configGame: ConfigGame;
+  @Inject("cameraUI") cameraUI: OrthoCamera;
   @Inject("inputHandler") inputHandler: InputHandler;
   @Inject("levelState") levelState: LevelState;
+  tempVec2 = new Vector2();
 
   initialized(): void {
     this.inputHandler.addEventListener(InputEvent.TouchStart, (x, y) => {
+      //checkPause
+      this.tempVec2 = this.inputHandler.getTouchedWorldCoord(this.cameraUI);
       if (this.configGame.start == false) {
-        if (x >= 0 && x <= Constants.SCREEN_WIDTH / 2) {
+        if (
+          this.tempVec2.x >= 0 &&
+          this.tempVec2.x <= Constants.SCREEN_WIDTH / 2
+        ) {
           this.levelState.role = 1;
           this.world.addSystem(new JoystickSystem(), true);
           this.world.addSystem(new PlayerMovementSystem(), true);
@@ -54,20 +62,20 @@ export class MenuRoleSystem extends System {
           this.world.addSystem(new NormalAttackSpawningSystem(), true);
           this.world.addSystem(new NormalAttackProcessingSystem(), true);
           this.world.addSystem(new PlayerRenderSystem(), false);
-
           this.world.addSystem(new CameraProcessingSystem(), false);
           this.world.addSystem(new JoystickRenderSystem(), false);
           this.world.addSystem(new EnemyRenderSystem(), false);
           this.world.addSystem(new NormalAttackRenderSystem(), false);
           this.world.addSystem(new Skill3RenderSystem(), false);
           this.world.addSystem(new ProtectBallRenderSystem(), false);
+          this.world.addSystem(new PauseMovementSystem(), false);
+
           this.configGame.start = true;
         }
-        if (x >= Constants.SCREEN_WIDTH / 2) {
+        if (this.tempVec2.x >= Constants.SCREEN_WIDTH / 2) {
           this.levelState.role = 2;
           this.configGame.amountProtectBall = 15;
           this.configGame.start = true;
-
           this.world.addSystem(new PlayerMovementSystem(), true);
           this.world.addSystem(new JoystickSystem(), true);
           this.world.addSystem(new UpgradeLevelSystem(), true);
@@ -78,7 +86,6 @@ export class MenuRoleSystem extends System {
           this.world.addSystem(new TornadoProcessSystem(), true);
           this.world.addSystem(new LaserSpawningSystem(), true);
           this.world.addSystem(new LaserProcessSystem(), true);
-
           this.world.addSystem(new CameraProcessingSystem(), false);
           this.world.addSystem(new ProtectSkillRenderSystem(), false);
           this.world.addSystem(new PlayerRenderSystem(), false);
@@ -86,6 +93,7 @@ export class MenuRoleSystem extends System {
           this.world.addSystem(new EnemyRenderSystem(), false);
           this.world.addSystem(new TornadoRenderSystem(), false);
           this.world.addSystem(new LaserRenderSystem(), false);
+          this.world.addSystem(new PauseMovementSystem(), false);
         }
       }
     });

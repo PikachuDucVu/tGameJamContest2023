@@ -67,8 +67,8 @@ export class JoystickSystem extends System {
       this.tempDirection.setVector(this.joyStick.direction);
 
       this.joyStick.dragging = false;
-      this.joyStick.origin.set(400, 300);
-      this.joyStick.thumbPos.set(400, 300);
+      this.joyStick.origin.set(375, 300);
+      this.joyStick.thumbPos.set(375, 300);
     }
   }
 }

@@ -73,6 +73,12 @@ export class UpgradeLevelSystem extends System {
         }
       }
       if (this.levelState.role === 2) {
+        const damageProtectSkill = this.world.getComponent(
+          this.gameState.protectSkill,
+          Damage
+        );
+        damageProtectSkill.damage += 50;
+
         this.configGame.sizeSkill1Mage /= 1.5;
         this.configGame.laserCooldown += 0.5;
 

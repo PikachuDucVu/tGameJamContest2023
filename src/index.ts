@@ -19,8 +19,8 @@ export const init = async () => {
   const gl = viewport.getContext();
 
   const assetManager = new AssetManager(gl);
-  // await assetManager.loadTexture("./pauseIcon.png", "pauseIcon");
-  // await assetManager.loadTexture("./playIcon.png", "playIcon");
+  await assetManager.loadTexture("./pauseIcon.png", "pauseIcon");
+  await assetManager.loadTexture("./playIcon.png", "playIcon");
   await assetManager.loadTexture("./knight.png", "knight");
   await assetManager.loadTexture("./knight1.png", "knight1");
   await assetManager.loadTexture("./knight2.png", "knight2");
